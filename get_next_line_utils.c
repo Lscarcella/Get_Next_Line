@@ -6,7 +6,7 @@
 /*   By: lscarcel <lscarcel@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 07:34:12 by lscarcel          #+#    #+#             */
-/*   Updated: 2023/12/12 16:31:44 by lscarcel         ###   ########.fr       */
+/*   Updated: 2023/12/13 16:34:42 by lscarcel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,28 +110,50 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 
 char *read_nbytes(int fd, size_t nbytes)
 {
-	static char *static_buffer;
-	char *temp_buffer;
+    static char *static_buffer = NULL;
+    char *temp_buffer;
+    size_t bytes_read;
+    size_t newline_position;
 	char *output_line;
-	size_t bytes_read;
-	size_t	newline_position;
-	
-	static_buffer = malloc((BUFFER_SIZE));
-	bytes_read = read(fd, *static_buffer, nbytes);
-	if (newline_position = ft_strchr(static_buffer, "\n"))
+
+    if (static_buffer == NULL)
 	{
-		temp_buffer = ft_substr(static_buffer, newline_position, BUFFER_SIZE);
-		
-	}
-	else if (bytes_read < 0)
+        static_buffer = malloc(BUFFER_SIZE);
+        if (static_buffer == NULL)
+		{
+            return NULL;
+        }
+    }
+    bytes_read = read(fd, static_buffer, nbytes);
+    if (bytes_read == BUFFER_SIZE)
 	{
-		
-	}
+        char *newline_ptr = ft_strchr(static_buffer, '\n');
+
+        if (newline_ptr != NULL)
+		{
+            newline_position = newline_ptr - static_buffer;
+            temp_buffer = ft_substr(static_buffer, newline_position + 1, BUFFER_SIZE);
+			output_line = static_buffer;
+			output_line[newline_position] = '\0';
+			static_buffer = temp_buffer;
+			return(output_line);
+        }
+		else
+		{
+            output_line = ft_strdup(static_buffer);
+			free(static_buffer);
+			read_nbytes(fd, nbytes);
+        }
+    }
 	else
-		read_nbytes(fd, nbytes);
+	{
+		
+    }
+    return 0;
 }
+
 // char *read_nbytes(int fd, size_t nbytes)
-// {
+// {q
 //     static char static_buffer[BUFFER_SIZE + 1];
 //     static int offset = 0;
 //     ssize_t bytes_read;
