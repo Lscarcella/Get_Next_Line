@@ -12,6 +12,10 @@
 
 #include "get_next_line.h"
 
+// ft_remove_line est utilisée pour supprimer la première ligne du tampon (ou mémoire tampon) stash.
+// Elle cherche la première occurrence du caractère de nouvelle ligne ('\n') dans le tampon.
+// Si aucun caractère de nouvelle ligne n'est trouvé, elle libère la mémoire allouée pour le tampon et retourne 0.
+// Sinon, elle crée un nouveau tampon sans la première ligne et libère la mémoire du tampon initial.
 char	*ft_remove_line(char *stash)
 {
 	char	*new_stash;
@@ -40,6 +44,10 @@ char	*ft_remove_line(char *stash)
 	return (new_stash);
 }
 
+// ft_get_line est utilisée pour extraire la première ligne du tampon stash.
+// Elle cherche la première occurrence du caractère de nouvelle ligne ('\n') dans le tampon.
+// Elle alloue de la mémoire pour stocker la ligne extraite et la retourne.
+// Si aucun caractère de nouvelle ligne n'est trouvé, elle retourne 0.
 char	*ft_get_line(char *stash)
 {
 	int		i;
@@ -69,6 +77,10 @@ char	*ft_get_line(char *stash)
 	return (line);
 }
 
+// Cette fonction lit le fichier pointé par fd et stocke son contenu dans un tampon stash.
+// Elle utilise un tampon buf pour lire les données du fichier en morceaux de taille BUFFER_SIZE à la fois.
+// Elle concatène les données lues dans le tampon stash jusqu'à ce qu'elle atteigne la fin du fichier ou qu'elle trouve un caractère de nouvelle ligne dans le tampon stash.
+// Elle retourne le tampon stash contenant les données lues.
 char	*ft_read_line(int fd, char *stash)
 {
 	char	*buf;
@@ -98,6 +110,12 @@ char	*ft_read_line(int fd, char *stash)
 	return (stash);
 }
 
+// Cette fonction est appelée pour obtenir la prochaine ligne du fichier associé au descripteur de fichier fd.
+// Elle vérifie d'abord si les paramètres (fd et BUFFER_SIZE) sont valides.
+// Elle utilise la fonction ft_read_line pour lire le fichier et stocker son contenu dans stash.
+// Ensuite, elle utilise ft_get_line pour extraire la première ligne du tampon stash.
+// Après avoir obtenu la ligne, elle utilise ft_remove_line pour supprimer cette ligne du tampon stash.
+// Finalement, elle retourne la ligne extraite.
 char	*get_next_line(int fd)
 {
 	static char	*stash;
